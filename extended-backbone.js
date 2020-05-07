@@ -162,3 +162,63 @@ const ExtendedBackboneRouter = Backbone.Router.extend({
     }
   }
 });
+
+/* exported FormBackboneView */
+const FormBackboneView = Backbone.View.extend({
+  formDefinition() {
+    return {
+      id: _.result(this, 'formId'),
+      rootPath: _.result(this, 'rootPath'),
+      success: (event) => {
+        event.preventDefault();
+        this.trigger('success');
+        return false;
+      },
+      useBinding: true,
+      sections: _.result(this, 'section')
+    };
+  },
+
+  formScript() {},
+
+  render() {
+    this.$el.empty();
+
+    const cotForm = new CotForm(this.formDefinition());
+    cotForm.render({ target: this.$el });
+    cotForm.setModel(this.model);
+
+    this.$form = $('form', this.$el).eq(0);
+    this.formValidator = this.$form.data('formValidation');
+
+    this.$liveRegion = $('.js-aria-live.sr-only, .ui-helper-hidden-accessible').eq(0);
+
+    this.formScript();
+  },
+
+  disableFields() {
+    this.$disabledElements = this.$form.find('button, input, select').filter(':enabled:visible').prop('disabled', true);
+    this.$liveRegion.html('Form fields are disabled');
+  },
+
+  enableFields() {
+    if (this.$disabledElements) {
+      this.$disabledElements.prop('disabled', false);
+      this.$disabledElements = null;
+    }
+    this.$liveRegion.html('Form fields are enabled');
+  },
+
+  showError(message) {
+    this.$form.prepend(`
+      <div role="alert" class="alert alert-danger alert-dismissible">
+        <button type="button" data-dismiss="alert" aria-label="Close" class="close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <div>
+            <strong>${message}</strong>
+        </div>
+      </div>
+    `);
+  }
+});

@@ -1,4 +1,4 @@
-/* global _ Backbone */
+/* global _ $ Backbone CotForm */
 
 /* exported ExtendedBackboneCollection */
 const ExtendedBackboneCollection = Backbone.Collection.extend({
@@ -10,7 +10,7 @@ const ExtendedBackboneCollection = Backbone.Collection.extend({
     let query =_.result(this, 'query');
     if (query || options.query) {
       let query = Object.assign({}, query, options.query);
-      
+
       const urlError = function () {
         throw new Error('A "url" property or function must be specified');
       };

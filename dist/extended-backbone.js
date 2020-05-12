@@ -6,17 +6,25 @@ function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableTo
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /* global _ $ Backbone CotForm */
 
@@ -28,24 +36,45 @@ var ExtendedBackboneCollection = Backbone.Collection.extend({
   fetch: function fetch() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-    var query = _.result(this, 'query');
+    var thisQuery = _.result(this, 'query');
 
-    if (query || options.query) {
-      var _query = Object.assign({}, _query, options.query);
+    var optionsQuery = options.query;
+
+    if (thisQuery || optionsQuery) {
+      if (typeof query === 'string') {
+        thisQuery = thisQuery.split('&').reduce(function (accumulator, currentValue) {
+          var _currentValue$split = currentValue.split('='),
+              _currentValue$split2 = _slicedToArray(_currentValue$split, 2),
+              name = _currentValue$split2[0],
+              value = _currentValue$split2[1];
+
+          accumulator[name] = value;
+          return accumulator;
+        }, {});
+      }
+
+      if (typeof optionsQuery === 'string') {
+        optionsQuery = optionsQuery.split('&').reduce(function (accumulator, currentValue) {
+          var _currentValue$split3 = currentValue.split('='),
+              _currentValue$split4 = _slicedToArray(_currentValue$split3, 2),
+              name = _currentValue$split4[0],
+              value = _currentValue$split4[1];
+
+          accumulator[name] = value;
+          return accumulator;
+        }, {});
+      }
 
       var urlError = function urlError() {
         throw new Error('A "url" property or function must be specified');
       };
 
       var base = _.result(this, 'url') || urlError();
-
-      if (_typeof(_query) === 'object') {
-        _query = Object.keys(_query).map(function (key) {
-          return "".concat(encodeURIComponent(key), "=").concat(encodeURIComponent(_query[key]));
-        }).join('&');
-      }
-
-      options.url = "".concat(base, "?").concat(_query);
+      var query = Object.assign({}, thisQuery, optionsQuery);
+      query = Object.keys(query).map(function (key) {
+        return "".concat(encodeURIComponent(key), "=").concat(encodeURIComponent(query[key]));
+      }).join('&');
+      options.url = "".concat(base, "?").concat(query);
     }
 
     return Backbone.Collection.prototype.fetch.call(this, options);

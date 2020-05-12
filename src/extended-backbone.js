@@ -181,17 +181,21 @@ const FormBackboneView = Backbone.View.extend({
 		return {
 			id: _.result(this, 'formId'),
 			rootPath: _.result(this, 'rootPath'),
-			success: (event) => {
-				event.preventDefault();
-				this.trigger('success');
-				return false;
-			},
+			success: this.success,
 			useBinding: true,
 			sections: _.result(this, 'section')
 		};
 	},
 
-	formScript() { },
+	success(event) {
+		event.preventDefault();
+		this.trigger('success');
+		return false;
+	},
+
+	formScript() {
+		this.$form.append('<p><button class="btn btn-primary btn-lg">Submit</button></p>');
+	},
 
 	render() {
 		this.$el.empty();

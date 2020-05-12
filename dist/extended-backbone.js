@@ -227,10 +227,14 @@ var ExtendedBackboneRouter = Backbone.Router.extend({
 
 var FormBackboneView = Backbone.View.extend({
   formDefinition: function formDefinition() {
+    var _this2 = this;
+
     return {
       id: _.result(this, 'formId'),
       rootPath: _.result(this, 'rootPath'),
-      success: this.success,
+      success: function success(event) {
+        return _this2.success(event);
+      },
       useBinding: true,
       sections: _.result(this, 'section')
     };

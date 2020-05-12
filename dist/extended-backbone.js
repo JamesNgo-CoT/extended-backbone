@@ -236,7 +236,7 @@ var FormBackboneView = Backbone.View.extend({
         return _this2.success(event);
       },
       useBinding: true,
-      sections: _.result(this, 'section')
+      sections: _.result(this, 'sections')
     };
   },
   success: function success(event) {

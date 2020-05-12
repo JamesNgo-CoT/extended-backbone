@@ -183,7 +183,7 @@ const FormBackboneView = Backbone.View.extend({
 			rootPath: _.result(this, 'rootPath'),
 			success: (event) => this.success(event),
 			useBinding: true,
-			sections: _.result(this, 'section')
+			sections: _.result(this, 'sections')
 		};
 	},
 

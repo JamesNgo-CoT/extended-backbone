@@ -70,7 +70,7 @@ function buildOther() {
 		.pipe(connect.reload());
 }
 
-const build = gulp.parallel(buildJs, buildCss, buildScss);
+const build = gulp.parallel(buildJs, buildCss, buildScss, buildOther);
 module.exports.build = gulp.series(clean, build);
 
 ////////////////////////////////////////////////////////////////////////////////

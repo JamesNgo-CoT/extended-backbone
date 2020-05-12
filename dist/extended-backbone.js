@@ -227,23 +227,22 @@ var ExtendedBackboneRouter = Backbone.Router.extend({
 
 var FormBackboneView = Backbone.View.extend({
   formDefinition: function formDefinition() {
-    var _this2 = this;
-
     return {
       id: _.result(this, 'formId'),
       rootPath: _.result(this, 'rootPath'),
-      success: function success(event) {
-        event.preventDefault();
-
-        _this2.trigger('success');
-
-        return false;
-      },
+      success: this.success,
       useBinding: true,
       sections: _.result(this, 'section')
     };
   },
-  formScript: function formScript() {},
+  success: function success(event) {
+    event.preventDefault();
+    this.trigger('success');
+    return false;
+  },
+  formScript: function formScript() {
+    this.$form.append('<p><button class="btn btn-primary btn-lg">Submit</button></p>');
+  },
   render: function render() {
     this.$el.empty();
     var cotForm = new CotForm(this.formDefinition());

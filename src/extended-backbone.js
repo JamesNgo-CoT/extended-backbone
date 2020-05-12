@@ -213,7 +213,7 @@ const FormBackboneView = Backbone.View.extend({
 	},
 
 	disableFields() {
-		this.$disabledElements = this.$form.find('button, input, select').filter(':enabled:visible').prop('disabled', true);
+		this.$disabledElements = this.$form.find('button, input, select, textarea').filter(':enabled:visible').prop('disabled', true);
 		this.$liveRegion.html('Form fields are disabled');
 	},
 

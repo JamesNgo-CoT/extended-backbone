@@ -1,5 +1,9 @@
 /* global _ $ Backbone CotForm */
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXTENDED BACKBONE COLLECTION
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /* exported ExtendedBackboneCollection */
 const ExtendedBackboneCollection = Backbone.Collection.extend({
 	parse(response, options) {
@@ -37,6 +41,10 @@ const ExtendedBackboneCollection = Backbone.Collection.extend({
 		return Backbone.Collection.prototype.fetch.call(this, options);
 	}
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXTENDED BACKBONE MODEL
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* exported ExtendedBackboneModel */
 const ExtendedBackboneModel = Backbone.Model.extend({
@@ -83,6 +91,10 @@ const ExtendedBackboneModel = Backbone.Model.extend({
 	}
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXTENDED BACKBONE ROUTER
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /* exported ExtendedBackboneRouter */
 const ExtendedBackboneRouter = Backbone.Router.extend({
 	defaultFragment: 'home',
@@ -92,6 +104,7 @@ const ExtendedBackboneRouter = Backbone.Router.extend({
 		'*default': 'routeDefault'
 	},
 
+	hasRouted: false,
 	execute(callback, args, name) {
 		const nextCleanup = (cleanupFunction) => {
 			if (typeof cleanupFunction === 'function') {
@@ -102,9 +115,13 @@ const ExtendedBackboneRouter = Backbone.Router.extend({
 		const afterCleanup = (cleanupFunctionReturnValue) => {
 			if (cleanupFunctionReturnValue !== false) {
 				this.cleanupFunction = null;
-
 				if (typeof callback === 'function') {
 					const cleanupFunction = callback.call(this, ...args);
+
+					if (!this.hasRouted) {
+						this.hasRouted = true;
+					}
+
 					if (cleanupFunction instanceof Promise) {
 						cleanupFunction.then((finalCleanupFunction) => {
 							nextCleanup(finalCleanupFunction);
@@ -174,6 +191,10 @@ const ExtendedBackboneRouter = Backbone.Router.extend({
 		}
 	}
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FORM BACKBONE VIEW
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* exported FormBackboneView */
 const FormBackboneView = Backbone.View.extend({

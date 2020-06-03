@@ -27,6 +27,9 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /* global _ $ Backbone CotForm */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXTENDED BACKBONE COLLECTION
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* exported ExtendedBackboneCollection */
 var ExtendedBackboneCollection = Backbone.Collection.extend({
@@ -79,7 +82,10 @@ var ExtendedBackboneCollection = Backbone.Collection.extend({
 
     return Backbone.Collection.prototype.fetch.call(this, options);
   }
-});
+}); ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXTENDED BACKBONE MODEL
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /* exported ExtendedBackboneModel */
 
 var ExtendedBackboneModel = Backbone.Model.extend({
@@ -120,12 +126,16 @@ var ExtendedBackboneModel = Backbone.Model.extend({
     options.data = JSON.stringify(attrs);
     return Backbone.Model.prototype.save.call(this, null, options);
   }
-});
+}); ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXTENDED BACKBONE ROUTER
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /* exported ExtendedBackboneRouter */
 
 var ExtendedBackboneRouter = Backbone.Router.extend({
   defaultFragment: 'home',
   routes: (_routes = {}, _defineProperty(_routes, 'home', function home() {}), _defineProperty(_routes, '*default', 'routeDefault'), _routes),
+  hasRouted: false,
   execute: function execute(callback, args, name) {
     var _this = this;
 
@@ -141,6 +151,10 @@ var ExtendedBackboneRouter = Backbone.Router.extend({
 
         if (typeof callback === 'function') {
           var cleanupFunction = callback.call.apply(callback, [_this].concat(_toConsumableArray(args)));
+
+          if (!_this.hasRouted) {
+            _this.hasRouted = true;
+          }
 
           if (cleanupFunction instanceof Promise) {
             cleanupFunction.then(function (finalCleanupFunction) {
@@ -222,7 +236,10 @@ var ExtendedBackboneRouter = Backbone.Router.extend({
       });
     }
   }
-});
+}); ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FORM BACKBONE VIEW
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /* exported FormBackboneView */
 
 var FormBackboneView = Backbone.View.extend({
@@ -241,6 +258,7 @@ var FormBackboneView = Backbone.View.extend({
   },
   success: function success(event) {
     event.preventDefault();
+    this.removeErrors();
     this.trigger('success');
     return false;
   },
@@ -272,6 +290,21 @@ var FormBackboneView = Backbone.View.extend({
     this.$liveRegion.html('Form fields are enabled');
   },
   showError: function showError(message) {
-    this.$form.prepend("\n      <div role=\"alert\" class=\"alert alert-danger alert-dismissible\">\n        <button type=\"button\" data-dismiss=\"alert\" aria-label=\"Close\" class=\"close\">\n          <span aria-hidden=\"true\">\xD7</span>\n        </button>\n        <div>\n            <strong>".concat(message, "</strong>\n        </div>\n      </div>\n    "));
+    var $errorEl = $("\n      <div role=\"alert\" class=\"alert alert-danger alert-dismissible\">\n        <button type=\"button\" data-dismiss=\"alert\" aria-label=\"Close\" class=\"close\">\n          <span aria-hidden=\"true\">\xD7</span>\n        </button>\n        <div>".concat(message, "</div>\n      </div>\n    "));
+    $('.panel', this.$el).eq(0).before($errorEl);
+    $('button', $errorEl).focus();
+
+    if (!this.$errorEls) {
+      this.$errorEls = [];
+    }
+
+    this.$errorEls.push($errorEl);
+  },
+  removeErrors: function removeErrors() {
+    if (this.$errorEls) {
+      for (var index = 0, length = this.$errorEls.length; index < length; index++) {
+        this.$errorEls[index].remove();
+      }
+    }
   }
 });

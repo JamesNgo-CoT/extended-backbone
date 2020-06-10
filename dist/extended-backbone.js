@@ -292,6 +292,12 @@ var FormBackboneView = Backbone.View.extend({
     this.$liveRegion.html('Form fields are enabled');
   },
   showError: function showError(message) {
+    var _this3 = this;
+
+    // Dont know why, but this doesnt work unless it's inside a set timeout.
+    setTimeout(function () {
+      _this3.formValidator.resetForm(false);
+    }, 0);
     this.$alert.addClass('alert alert-danger');
     this.$alert.html(message);
   },

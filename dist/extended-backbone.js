@@ -274,6 +274,8 @@ var FormBackboneView = Backbone.View.extend({
     cotForm.setModel(this.model);
     this.$form = $('form', this.$el).eq(0);
     this.formValidator = this.$form.data('formValidation');
+    this.$alert = $('<div role="alert"></div>');
+    $('.panel:first', this.$form).before(this.$alert);
     this.$liveRegion = $('.js-aria-live.sr-only, .ui-helper-hidden-accessible').eq(0);
     this.formScript();
   },
@@ -290,21 +292,11 @@ var FormBackboneView = Backbone.View.extend({
     this.$liveRegion.html('Form fields are enabled');
   },
   showError: function showError(message) {
-    var $errorEl = $("\n      <div role=\"alert\" class=\"alert alert-danger alert-dismissible\">\n        <button type=\"button\" data-dismiss=\"alert\" aria-label=\"Close\" class=\"close\">\n          <span aria-hidden=\"true\">\xD7</span>\n        </button>\n        <div>".concat(message, "</div>\n      </div>\n    "));
-    $('.panel', this.$el).eq(0).before($errorEl);
-    $('button', $errorEl).focus();
-
-    if (!this.$errorEls) {
-      this.$errorEls = [];
-    }
-
-    this.$errorEls.push($errorEl);
+    this.$alert.addClass('alert alert-danger');
+    this.$alert.html(message);
   },
   removeErrors: function removeErrors() {
-    if (this.$errorEls) {
-      for (var index = 0, length = this.$errorEls.length; index < length; index++) {
-        this.$errorEls[index].remove();
-      }
-    }
+    this.$alert.removeClass('alert alert-danger');
+    this.$alert.html('');
   }
 });

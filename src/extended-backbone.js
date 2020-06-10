@@ -251,6 +251,12 @@ const FormBackboneView = Backbone.View.extend({
   },
 
   showError(message) {
+
+    // Dont know why, but this doesnt work unless it's inside a set timeout.
+    setTimeout(() => {
+      this.formValidator.resetForm(false);
+    }, 0);
+
     this.$alert.addClass('alert alert-danger');
     this.$alert.html(message);
   },

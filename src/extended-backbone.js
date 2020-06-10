@@ -229,6 +229,9 @@ const FormBackboneView = Backbone.View.extend({
     this.$form = $('form', this.$el).eq(0);
     this.formValidator = this.$form.data('formValidation');
 
+    this.$alert = $('<div role="alert"></div>');
+    $('.panel:first', this.$form).before(this.$alert);
+
     this.$liveRegion = $('.js-aria-live.sr-only, .ui-helper-hidden-accessible').eq(0);
 
     this.formScript();
@@ -248,30 +251,12 @@ const FormBackboneView = Backbone.View.extend({
   },
 
   showError(message) {
-    const $errorEl = $(`
-      <div role="alert" class="alert alert-danger alert-dismissible">
-        <button type="button" data-dismiss="alert" aria-label="Close" class="close">
-          <span aria-hidden="true">×</span>
-        </button>
-        <div>${message}</div>
-      </div>
-    `);
-
-    $('.panel', this.$el).eq(0).before($errorEl);
-
-    $('button', $errorEl).focus();
-
-    if (!this.$errorEls) {
-      this.$errorEls = [];
-    }
-    this.$errorEls.push($errorEl);
+    this.$alert.addClass('alert alert-danger');
+    this.$alert.html(message);
   },
 
   removeErrors() {
-    if (this.$errorEls) {
-      for (let index = 0, length = this.$errorEls.length; index < length; index++) {
-        this.$errorEls[index].remove();
-      }
-    }
+    this.$alert.removeClass('alert alert-danger');
+    this.$alert.html('');
   }
 });

@@ -249,11 +249,12 @@ var FormBackboneView = Backbone.View.extend({
     return {
       id: _.result(this, 'formId'),
       rootPath: _.result(this, 'rootPath'),
+      sections: _.result(this, 'sections'),
       success: function success(event) {
         return _this2.success(event);
       },
-      useBinding: true,
-      sections: _.result(this, 'sections')
+      title: _.result(this, 'title'),
+      useBinding: true
     };
   },
   success: function success(event) {

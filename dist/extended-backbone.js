@@ -275,7 +275,7 @@ var FormBackboneView = Backbone.View.extend({
     cotForm.setModel(this.model);
     this.$form = $('form', this.$el).eq(0);
     this.formValidator = this.$form.data('formValidation');
-    this.$title = $('h2', this.$form);
+    this.$title = $('h2', this.$form).attr('tabindex', '-1');
     this.$alert = $('<div role="alert"></div>');
     $('.panel:first', this.$form).before(this.$alert);
     this.$liveRegion = $('.js-aria-live.sr-only, .ui-helper-hidden-accessible').eq(0);

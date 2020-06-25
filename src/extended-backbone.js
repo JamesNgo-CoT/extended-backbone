@@ -230,6 +230,8 @@ const FormBackboneView = Backbone.View.extend({
 		this.$form = $('form', this.$el).eq(0);
 		this.formValidator = this.$form.data('formValidation');
 
+		this.$title = $('h2', this.$form);
+
 		this.$alert = $('<div role="alert"></div>');
 		$('.panel:first', this.$form).before(this.$alert);
 
@@ -265,5 +267,9 @@ const FormBackboneView = Backbone.View.extend({
 	removeErrors() {
 		this.$alert.removeClass('alert alert-danger');
 		this.$alert.html('');
+	},
+
+	focus() {
+		this.$title.focus();
 	}
 });
